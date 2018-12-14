@@ -114,7 +114,6 @@ D  # docstring rules disabled
 test_exclude_added=(
 )
 
-
 ################################################################################
 # If Travis CI is running this script and there's a valid pull request,
 # use the commits defined by TRAVIS_COMMIT_RANGE to get a list of changed
@@ -152,11 +151,11 @@ check_flake8() {
   status="$((${status} | ${?}))"
 }
 
-# All files
-ignored_errors_all="${ignored_errors_all[@]}"
-exclude_all="${exclude_all[@]}"
-check_flake8 --ignore="${ignored_errors_all// /,}" \
-             --exclude="${exclude_all// /,}"
+# # All files
+# ignored_errors_all="${ignored_errors_all[@]}"
+# exclude_all="${exclude_all[@]}"
+# check_flake8 --ignore="${ignored_errors_all// /,}" \
+#              --exclude="${exclude_all// /,}"
 
 # Changed files
 ignored_errors_changed="${ignored_errors_changed[@]}"
