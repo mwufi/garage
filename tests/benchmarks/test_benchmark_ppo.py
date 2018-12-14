@@ -32,6 +32,7 @@ from garage.tf.algos import PPO
 from garage.tf.baselines import GaussianMLPBaseline
 from garage.tf.envs import TfEnv
 from garage.tf.policies import GaussianMLPPolicy
+from tests.helpers import AutoStopEnv
 
 
 class TestBenchmarkPPO(unittest.TestCase):
@@ -48,6 +49,7 @@ class TestBenchmarkPPO(unittest.TestCase):
         for task in mujoco1m["tasks"]:
             env_id = task["env_id"]
             env = gym.make(env_id)
+            baseline_env = AutoStopEnv(env_name=env_id)
             seeds = random.sample(range(100), task["trials"])
 
             task_dir = osp.join(benchmark_dir, env_id)
@@ -68,8 +70,9 @@ class TestBenchmarkPPO(unittest.TestCase):
                 garage_csv = run_garage(env, seed, garage_dir)
 
                 # Run baselines algorithms
-                env.reset()
-                baselines_csv = run_baselines(env, seed, baselines_dir)
+                baseline_env.reset()
+                baselines_csv = run_baselines(baseline_env, seed,
+                                              baselines_dir)
 
                 garage_csvs.append(garage_csv)
                 baselines_csvs.append(baselines_csv)
