@@ -8,6 +8,9 @@ It diffs from OnPolicyVectorizedSampler in two parts:
  from replay buffer, which only has buffer_batch_size.
  - It needs to add transitions to replay buffer throughout the rollout.
 """
+# import matplotlib
+# matplotlib.use('TkAgg')
+# import matplotlib.pyplot as plt
 import itertools
 import pickle
 
@@ -91,6 +94,17 @@ class OffPolicyVectorizedSampler(BatchSampler):
                     input_obses)
 
             next_obses, rewards, dones, env_infos = self.vec_env.step(actions)
+
+            # rgb = self.vec_env.envs[0].render(mode='rgb_array')
+            # f, axarr = plt.subplots(3, 2)
+            # axarr[0, 0].imshow(next_obses[0][:, :, 0], cmap='gray')
+            # axarr[0, 1].imshow(next_obses[0][:, :, 1], cmap='gray')
+            # axarr[1, 0].imshow(next_obses[0][:, :, 2], cmap='gray')
+            # axarr[1, 1].imshow(next_obses[0][:, :, 3], cmap='gray')
+            # axarr[2, 0].imshow(next_obses[0])
+            # axarr[2, 1].imshow(rgb)
+            # plt.show()
+
             agent_infos = tensor_utils.split_tensor_dict_list(agent_infos)
             env_infos = tensor_utils.split_tensor_dict_list(env_infos)
             if agent_infos is None:
@@ -131,7 +145,8 @@ class OffPolicyVectorizedSampler(BatchSampler):
                 running_paths[idx]["rewards"].append(reward)
                 running_paths[idx]["env_infos"].append(env_info)
 
-                if done or (rollout == self.algo.max_path_length - 1):
+                # if done or (rollout == self.algo.max_path_length - 1):
+                if done:
                     paths.append(
                         dict(
                             rewards=tensor_utils.stack_tensor_list(
