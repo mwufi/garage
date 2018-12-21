@@ -32,6 +32,7 @@ iterate.dat
 src/
 .settings
 .pods
+docker/mjkey.txt
 docs/_build
 blackbox.zip
 blackbox

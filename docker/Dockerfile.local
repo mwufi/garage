@@ -1,0 +1,12 @@
+FROM rlworkgroup/garage:release
+
+# Setup repo
+WORKDIR /root/code/garage
+
+# Add code stub last
+RUN rm -rd /root/code/garage/*
+COPY . /root/code/garage
+
+# We need a MuJoCo key to use mujoco_py
+RUN /bin/bash -c 'if [[ -f /root/code/garage/docker/mjkey.txt ]]; then \
+  cp /root/code/garage/docker/mjkey.txt /root/.mujoco/mjkey.txt; fi'
