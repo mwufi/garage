@@ -75,7 +75,9 @@ class OffPolicyVectorizedSampler(BatchSampler):
         if self.algo.es:
             self.algo.es.reset()
 
-        for rollout in range(self.algo.max_path_length):
+        batch_samples = self.vec_env.num_envs * self.algo.max_path_length
+        n_samples = 0
+        while n_samples < batch_samples:
             policy.reset(dones)
             if self.algo.input_include_goal:
                 obs = [obs["observation"] for obs in obses]
@@ -132,13 +134,15 @@ class OffPolicyVectorizedSampler(BatchSampler):
                 running_paths[idx]["rewards"].append(reward)
                 running_paths[idx]["env_infos"].append(env_info)
 
-                if done or (rollout == self.algo.max_path_length - 1):
+                if done:
                     paths.append(
                         dict(
                             rewards=tensor_utils.stack_tensor_list(
                                 running_paths[idx]["rewards"]),
                             env_infos=tensor_utils.stack_tensor_dict_list(
                                 running_paths[idx]["env_infos"])))
+                    n_samples += len(running_paths[idx]["rewards"])
+                    print(n_samples)
                     running_paths[idx] = None
 
                     if self.algo.es:
